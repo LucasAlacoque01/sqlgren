@@ -1,0 +1,281 @@
+/* ===== RESET BÁSICO ===== */
+body {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #000000;
+  --bg-card: #0a0a0f;
+  --bg-elevated: #12121a;
+  --accent-blue: #00d4ff;
+  --accent-purple: #a855f7;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #fbbf24;
+  --accent-rose: #f43f5e;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(255, 255, 255, 0.05);
+  --glow-blue: rgba(0, 212, 255, 0.4);
+  --glow-purple: rgba(168, 85, 247, 0.3);
+}
+
+/* ===== SCROLLBAR ===== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-blue) var(--bg-card);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--bg-card);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue));
+}
+
+/* ===== FONTES ===== */
+.font-display {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== GRADIENTES ===== */
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--accent-blue),
+    var(--accent-purple),
+    var(--accent-cyan)
+  );
+  background-clip: text;
+-webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ===== CARD BORDA ANIMADA ===== */
+.gradient-border {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  padding: 2px;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-blue),
+    var(--accent-purple),
+    var(--accent-cyan),
+    var(--accent-blue)
+  );
+  background-size: 300% 300%;
+  animation: borderFlow 4s ease infinite;
+
+  mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+
+  pointer-events: none;
+}
+
+@keyframes borderFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ===== CARD GLOW ===== */
+.card-glow {
+  position: relative;
+  box-shadow:
+    0 0 60px -15px var(--glow-blue),
+    0 0 100px -40px var(--glow-purple),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.card-glow:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 0 80px -10px var(--glow-blue),
+    0 0 120px -30px var(--glow-purple);
+}
+
+.card-glow:hover::after {
+  opacity: 1;
+}
+
+/* ===== BADGES ===== */
+.badge-type {
+  background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.2));
+  border: 1px solid rgba(0,212,255,0.4);
+  color: var(--accent-blue);
+}
+
+.badge-complexity-baixa {
+  background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2));
+  border: 1px solid rgba(16,185,129,0.4);
+  color: var(--accent-emerald);
+}
+
+.badge-complexity-media {
+  background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(244,63,94,0.2));
+  border: 1px solid rgba(251,191,36,0.4);
+  color: var(--accent-amber);
+}
+
+.badge-complexity-alta {
+  background: linear-gradient(135deg, rgba(244,63,94,0.2), rgba(168,85,247,0.2));
+  border: 1px solid rgba(244,63,94,0.4);
+  color: var(--accent-rose);
+}
+
+/* ===== SQL BLOCO ===== */
+.sql-block {
+  background: linear-gradient(180deg, #000, #0a0a0f);
+  border: 1px solid rgba(0,212,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.sql-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+  animation: scanLine 3s infinite;
+}
+
+@keyframes scanLine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+.sql-header {
+  background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(168,85,247,0.05));
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+}
+
+/* ===== SQL SYNTAX ===== */
+.sql-keyword { color: #ff6b9d; font-weight: 600; }
+.sql-function { color: #c792ea; }
+.sql-string { color: #00d4ff; }
+.sql-number { color: #a5f3fc; }
+.sql-comment { color: #64748b; font-style: italic; }
+.sql-table { color: #10b981; }
+.sql-column { color: #fbbf24; }
+
+/* ===== SIDEBAR ===== */
+.sidebar-item {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.sidebar-item::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+  transform: translateX(-3px);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-item:hover::before,
+.sidebar-item.active::before {
+  transform: translateX(0);
+}
+
+.sidebar-item.active {
+  background: rgba(0,212,255,0.12);
+}
+
+/* ===== INPUT ===== */
+.search-input {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.search-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.15);
+}
+
+/* ===== ANIMAÇÕES ===== */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BACKGROUND ===== */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+.spotlight {
+  position: fixed;
+  inset: -50%;
+  background: radial-gradient(circle,
+    rgba(0,212,255,0.08),
+    rgba(168,85,247,0.04),
+    transparent 50%);
+  animation: spotlight 20s infinite;
+}
+
+@keyframes spotlight {
+  0%,100% { transform: translate(0,0); }
+  50% { transform: translate(10%,10%); }
+}

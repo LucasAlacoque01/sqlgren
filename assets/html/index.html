@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-br" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <title>SQL DocGen</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    body {
+      box-sizing: border-box;
+      background: #000;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body class="h-full">
+
+  <!-- Background -->
+  <div class="spotlight"></div>
+  <div class="grid-bg"></div>
+
+  <div class="h-full flex overflow-auto">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 flex-shrink-0 border-r flex flex-col bg-black">
+
+      <!-- Logo -->
+      <div class="p-6 border-b">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-400 to-purple-500">
+            <span class="text-white font-bold">SQL</span>
+          </div>
+          <div>
+            <h1 id="page-title" class="font-bold text-lg">
+              SQL DocGen
+            </h1>
+            <p id="subtitle" class="text-xs text-gray-400">
+              Documentação automática
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="p-4">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Buscar queries..."
+          class="w-full px-4 py-2 rounded bg-zinc-900 text-sm font-mono outline-none"
+        >
+      </div>
+
+      <!-- Stats -->
+      <div class="px-4 pb-4 grid grid-cols-2 gap-2">
+        <div class="rounded-lg p-3 text-center bg-zinc-900">
+          <div id="total-queries" class="text-xl font-bold text-cyan-400">0</div>
+          <div class="text-xs text-gray-400">Queries</div>
+        </div>
+        <div class="rounded-lg p-3 text-center bg-zinc-900">
+          <div id="total-tables" class="text-xl font-bold text-emerald-400">0</div>
+          <div class="text-xs text-gray-400">Tabelas</div>
+        </div>
+      </div>
+
+      <!-- Query Nav -->
+      <nav class="flex-1 overflow-y-auto px-2">
+        <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          Queries
+        </div>
+        <div id="query-nav" class="space-y-1">
+          <!-- JS injeta aqui -->
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="p-4 border-t text-xs text-gray-400">
+        <span id="generated-at"></span>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 overflow-y-auto">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-10 border-b bg-black/80 backdrop-blur">
+        <div class="px-8 py-4 flex justify-between items-center">
+
+          <div>
+            <h2 class="text-lg font-semibold">
+              Documentação de Queries
+            </h2>
+            <p class="text-sm text-gray-400">
+              Análise estrutural baseada em SQL
+            </p>
+          </div>
+
+          <!-- Filters -->
+          <div class="flex gap-2">
+            <button id="filter-all" class="filter-btn px-4 py-2 rounded bg-cyan-500 text-white">
+              Todas
+            </button>
+            <button id="filter-select" class="filter-btn px-4 py-2 rounded bg-zinc-800 text-gray-300">
+              SELECT
+            </button>
+            <button id="filter-insert" class="filter-btn px-4 py-2 rounded bg-zinc-800 text-gray-300">
+              INSERT
+            </button>
+            <button id="filter-update" class="filter-btn px-4 py-2 rounded bg-zinc-800 text-gray-300">
+              UPDATE
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- Cards -->
+      <div id="cards-container" class="p-8 space-y-8">
+        <!-- JS injeta os cards aqui -->
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- IMPORTA O JS EXTERNO -->
+  <script src="app.js"></script>
+
+</body>
+</html>

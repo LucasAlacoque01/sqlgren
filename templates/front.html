@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-br" class="h-full">
  <head>
@@ -495,118 +496,10 @@ body {
    </main>
   </div>
   <script>
+    
 // Sample data - this would be injected by Python
-const sampleQueries = [
-  {
-    titulo: "Vendas por Região",
-    descricao: "Calcula o total de vendas agregado por região geográfica, incluindo métricas de performance e comparativo com período anterior.",
-    tipo: "SELECT",
-    complexidade: "Média",
-    arquivo: "reports/vendas_regiao.sql",
-    tabelas: ["sales", "regions", "customers", "products"],
-    metricas: ["total_vendas", "ticket_medio", "quantidade_pedidos", "crescimento_yoy"],
-    dimensoes: ["regiao", "estado", "cidade", "periodo"],
-    sql: `SELECT 
-    r.nome AS regiao,
-    r.estado,
-    COUNT(DISTINCT s.pedido_id) AS quantidade_pedidos,
-    SUM(s.valor_total) AS total_vendas,
-    AVG(s.valor_total) AS ticket_medio,
-    ROUND(
-        (SUM(s.valor_total) - LAG(SUM(s.valor_total)) OVER (ORDER BY r.nome)) 
-        / LAG(SUM(s.valor_total)) OVER (ORDER BY r.nome) * 100, 2
-    ) AS crescimento_yoy
-FROM sales s
-INNER JOIN regions r ON s.regiao_id = r.id
-INNER JOIN customers c ON s.cliente_id = c.id
-WHERE s.data_pedido >= DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR)
-GROUP BY r.nome, r.estado
-HAVING SUM(s.valor_total) > 10000
-ORDER BY total_vendas DESC;`
-  },
-  {
-    titulo: "Análise de Churn",
-    descricao: "Identifica clientes com alto risco de churn baseado em padrões de comportamento e histórico de compras nos últimos 90 dias.",
-    tipo: "SELECT",
-    complexidade: "Alta",
-    arquivo: "analytics/churn_analysis.sql",
-    tabelas: ["customers", "orders", "interactions", "subscriptions"],
-    metricas: ["churn_score", "dias_ultima_compra", "frequencia_compra", "ltv"],
-    dimensoes: ["segmento_cliente", "plano", "canal_aquisicao"],
-    sql: `WITH customer_metrics AS (
-    SELECT 
-        c.id AS customer_id,
-        c.segmento,
-        c.plano,
-        DATEDIFF(CURRENT_DATE, MAX(o.data_pedido)) AS dias_ultima_compra,
-        COUNT(o.id) AS total_pedidos,
-        SUM(o.valor) AS ltv
-    FROM customers c
-    LEFT JOIN orders o ON c.id = o.customer_id
-    WHERE o.data_pedido >= DATE_SUB(CURRENT_DATE, INTERVAL 90 DAY)
-    GROUP BY c.id, c.segmento, c.plano
-)
-SELECT 
-    customer_id,
-    segmento,
-    plano,
-    dias_ultima_compra,
-    total_pedidos,
-    ltv,
-    CASE 
-        WHEN dias_ultima_compra > 60 THEN 'Alto'
-        WHEN dias_ultima_compra > 30 THEN 'Médio'
-        ELSE 'Baixo'
-    END AS churn_risk
-FROM customer_metrics
-WHERE dias_ultima_compra > 14
-ORDER BY dias_ultima_compra DESC;`
-  },
-  {
-    titulo: "Atualização de Estoque",
-    descricao: "Atualiza os níveis de estoque com base nas movimentações do dia, aplicando regras de negócio para produtos críticos.",
-    tipo: "UPDATE",
-    complexidade: "Baixa",
-    arquivo: "operations/update_stock.sql",
-    tabelas: ["inventory", "stock_movements"],
-    metricas: ["quantidade_atual", "quantidade_reservada"],
-    dimensoes: ["produto_id", "warehouse_id"],
-    sql: `UPDATE inventory i
-SET 
-    quantidade_atual = quantidade_atual + m.delta,
-    updated_at = CURRENT_TIMESTAMP
-FROM stock_movements m
-WHERE i.produto_id = m.produto_id
-  AND i.warehouse_id = m.warehouse_id
-  AND m.processado = FALSE
-  AND m.data_movimento = CURRENT_DATE;`
-  },
-  {
-    titulo: "Registro de Eventos",
-    descricao: "Insere novos eventos de tracking na tabela de analytics para posterior processamento pelo pipeline de dados.",
-    tipo: "INSERT",
-    complexidade: "Baixa",
-    arquivo: "tracking/insert_events.sql",
-    tabelas: ["analytics_events"],
-    metricas: [],
-    dimensoes: ["event_type", "user_id", "session_id"],
-    sql: `INSERT INTO analytics_events (
-    event_id,
-    event_type,
-    user_id,
-    session_id,
-    payload,
-    created_at
-)
-SELECT 
-    UUID() AS event_id,
-    :event_type,
-    :user_id,
-    :session_id,
-    :payload,
-    CURRENT_TIMESTAMP;`
-  }
-];
+     let filtered = queries;
+     const sampleQuconsteries = JSON.parse(sampleQueriesJSON);
 
 // Default configuration
 const defaultConfig = {
