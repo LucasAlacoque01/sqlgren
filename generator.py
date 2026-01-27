@@ -1,3 +1,5 @@
+
+
 from typing import Dict, Any
 from html_theme import render_query_block
 
@@ -22,7 +24,7 @@ def generate_block(name: str, sql: str, info: Dict[str, Any]) -> str:
     if not isinstance(info, dict):
         raise TypeError("O parâmetro 'info' deve ser um dicionário")
 
-    # 1️⃣ Normalização defensiva (view-model)
+    #  Normalização defensiva (view-model)
     block_info = {
         "titulo": info.get("titulo", name),
         "descricao": info.get("descricao", ""),
@@ -33,10 +35,10 @@ def generate_block(name: str, sql: str, info: Dict[str, Any]) -> str:
         "dimensoes": info.get("dimensoes", []),
     }
 
-    # 2️⃣ Higienização básica do SQL (apresentação)
+    # Higienização básica do SQL
     sql_clean = sql.strip()
 
-    # 3️⃣ Geração do HTML isolada
+    # Geração do HTML isolada
     return render_query_block(
         name=block_info["titulo"],
         sql=sql_clean,

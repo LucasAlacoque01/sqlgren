@@ -1,3 +1,5 @@
+
+
 import sqlglot
 from sqlglot import exp
 from typing import Dict, List, Set, Optional
@@ -16,7 +18,7 @@ def analyze_sql(sql: str) -> Optional[Dict]:
     - nível de complexidade estrutural
     """
 
-    # 1️⃣ Parsing seguro
+    # Parsing seguro
     try:
         parsed = sqlglot.parse(sql, read="postgres")
         if not parsed:
@@ -28,7 +30,7 @@ def analyze_sql(sql: str) -> Optional[Dict]:
             "detalhe": str(e),
         }
 
-    # 2️⃣ Coleta estrutural
+    # Coleta estrutural
     tabelas: Set[str] = set()
     metricas: Set[str] = set()
     dimensoes: List[str] = []
@@ -47,15 +49,15 @@ def analyze_sql(sql: str) -> Optional[Dict]:
         elif isinstance(node, exp.AggFunc):
             metricas.add(node.sql_name().upper())
 
-    # 3️⃣ GROUP BY (dimensões)
+    # GROUP BY (dimensões)
     group = ast.args.get("group")
     if group and group.expressions:
         dimensoes = [expr.sql() for expr in group.expressions]
 
-    # 4️⃣ Tipo da consulta (semântico)
+    # Tipo da consulta (semântico)
     tipo = "Agregação" if metricas else "Listagem"
 
-    # 5️⃣ Complexidade estrutural (score)
+    # Complexidade estrutural (score)
     score = (
         joins * 2
         + subqueries * 3
@@ -70,7 +72,7 @@ def analyze_sql(sql: str) -> Optional[Dict]:
     else:
         complexidade = "Pesada"
 
-    # 6️⃣ Retorno rico e extensível
+    # Retorno rico e extensível
     return {
         "tipo": tipo,
         "tabelas": sorted(tabelas),

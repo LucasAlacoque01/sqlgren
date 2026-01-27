@@ -1,3 +1,4 @@
+
 import json
 import html
 from pathlib import Path
@@ -22,7 +23,7 @@ def load_template(template_name: str) -> str:
     """
     base_dir = Path(__file__).resolve().parent
 
-    # ✅ CORRIGIDO: templates (não "templetes")
+    #  templates 
     templates_dir = base_dir / "templates"
     template_path = templates_dir / template_name
 
@@ -40,7 +41,7 @@ def load_template(template_name: str) -> str:
 def render_page(
     title: str,
     blocks: Iterable[Dict[str, Any]],
-    template_name: str = "index.html"
+    template_name: str = "front.html"
 ) -> str:
     """
     Renderiza a página HTML substituindo:

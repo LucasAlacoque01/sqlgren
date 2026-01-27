@@ -1,3 +1,4 @@
+
 # SQL DocGen
 
 > Documentação automática de consultas SQL baseada em análise estrutural.

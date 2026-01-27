@@ -1,9 +1,8 @@
+
 from typing import Dict, List
 
 
-# =========================
 # Utilidades linguísticas
-# =========================
 
 def lista_humana(itens: List[str]) -> str:
     """
@@ -22,9 +21,7 @@ def lista_humana(itens: List[str]) -> str:
     return ", ".join(itens[:-1]) + f" e {itens[-1]}"
 
 
-# =========================
 # Geração semântica
-# =========================
 
 def gerar_titulo(info: Dict) -> str:
     metricas = info.get("metricas", [])
@@ -62,9 +59,8 @@ def gerar_descricao(info: Dict) -> str:
     return ". ".join(frases) + "."
 
 
-# =========================
+
 # Interface pública
-# =========================
 
 def interpretar(info: Dict) -> Dict:
     """
