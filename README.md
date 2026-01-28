@@ -1,58 +1,154 @@
-
 # SQL DocGen
 
-> Documentação automática de consultas SQL baseada em análise estrutural.
+> **Documentação automática, confiável e legível de consultas SQL — no nível de ferramentas enterprise.**
 
-O **SQL DocGen** é uma ferramenta CLI que lê arquivos `.sql`, analisa sua estrutura usando `sqlglot` e gera **um único HTML** com documentação clara, organizada e legível para humanos.
+O **SQL DocGen** é uma ferramenta de linha de comando (CLI) que analisa **estruturalmente** arquivos SQL — **sem executar nenhuma query** — e gera **um único artefato HTML**, estático e portátil, contendo documentação clara, organizada e inteligível para humanos.
 
-Ele foi criado para resolver um problema comum em times de dados e backend:
+Este projeto resolve um problema real e recorrente em times de dados, backend e BI:
 
-> *"Temos muitas queries, mas ninguém sabe exatamente o que cada uma faz."*
+> *Consultas SQL críticas existem, funcionam e produzem resultados… mas ninguém sabe exatamente o que fazem, por que existem ou quão complexas são.*
+
+O SQL DocGen transforma SQL em **conhecimento documentado**, auditável e compartilhável.
+
+---
+
+## 🎯 Por que o SQL DocGen existe?
+
+Ferramentas tradicionais de dados normalmente focam em:
+
+* execução
+* performance
+* resultados
+
+O **SQL DocGen** foca em algo diferente — e frequentemente negligenciado:
+
+👉 **compreensão estrutural e semântica do SQL**.
+
+Ele foi projetado para cenários onde:
+
+* há centenas ou milhares de queries legadas
+* múltiplas pessoas trabalham no mesmo repositório
+* onboarding técnico é lento e custoso
+* auditoria, rastreabilidade e governança são críticos
+* o SQL é um ativo de negócio, não apenas código
 
 ---
 
 ## ✨ Principais recursos
 
 * 📂 Leitura recursiva de arquivos `.sql`
-* 🧠 Análise estrutural (tabelas, métricas, dimensões, joins)
-* ✍️ Geração automática de **título e descrição em linguagem natural**
-* 📊 Classificação de complexidade da query
+* 🧠 Análise estrutural baseada em **AST** (não regex)
+* 🧩 Detecção automática de:
+
+  * tabelas utilizadas
+  * métricas (funções de agregação)
+  * dimensões (`GROUP BY`)
+  * quantidade de `JOINs`
+  * subqueries
+* ✍️ Geração automática de **títulos e descrições em linguagem natural**
+* 📊 Classificação objetiva de complexidade estrutural
 * 🌐 Geração de **HTML único**, estático e portátil
-* 🧩 Arquitetura modular e extensível
+* 🔐 **Não executa SQL** (seguro para ambientes sensíveis)
+* 🧱 Arquitetura modular, previsível e extensível
 
 ---
 
-## 📸 Exemplo de saída
+## 🖼️ Resultado gerado
 
-O HTML gerado inclui, para cada query:
+Para cada query documentada, o HTML final apresenta:
 
-* Título automático
-* Descrição textual do que a query faz
-* Tipo (Listagem / Agregação)
-* Complexidade (Simples / Média / Pesada)
+* Título gerado automaticamente
+* Descrição semântica do que a query faz
+* Tipo da consulta (Listagem ou Agregação)
+* Nível de complexidade (Simples / Média / Pesada)
 * Tabelas envolvidas
-* Métricas e dimensões
-* SQL completo formatado
+* Métricas detectadas
+* Dimensões de agrupamento
+* SQL completo preservado
+
+Tudo consolidado em **um único arquivo HTML**, fácil de:
+
+* compartilhar
+* versionar
+* arquivar
+* anexar a auditorias técnicas
+
+Nenhum servidor. Nenhuma dependência frontend. Apenas HTML.
 
 ---
 
 ## 🏗️ Arquitetura do projeto
 
+O SQL DocGen foi desenhado seguindo princípios claros de **responsabilidade única**, **separação de camadas** e **previsibilidade de comportamento**.
+
 ```
-SQL_DOCGEN_HTML_UNICO/
-├── analyzer.py # Análise estrutural das consultas SQL
-├── cli.py # Orquestração via linha de comando (CLI)
-├── generator.py # Geração do HTML final da documentação
-├── interpreter.py # Conversão técnica do SQL para linguagem natural
-├── html_theme.py # Definição de layout e tema HTML
-├── queries/ # Consultas SQL de entrada
-│ └── *.sql
-├── output/ # Arquivos gerados
-│ └── *.html
-└── README.md # Documentação do projeto
+SQL_DOCGEN/
+├── analyzer.py      # Análise estrutural do SQL (AST)
+├── interpreter.py   # Interpretação semântica (linguagem natural)
+├── generator.py     # Normalização e view-model dos blocos
+├── html_theme.py    # Renderização e tema HTML
+├── cli.py           # Interface de linha de comando (CLI)
+├── assets/          # CSS e JS do HTML gerado
+├── templates/       # Templates HTML
+├── queries/         # Consultas SQL de entrada
+│   └── **/*.sql
+├── output/          # Artefatos gerados
+│   └── consultas.html
+└── README.md
 ```
 
-Cada módulo tem **responsabilidade única**, facilitando manutenção e evolução.
+### Visão conceitual do fluxo
+
+1. **Analyzer**
+
+   * Realiza parsing seguro do SQL
+   * Caminha pela AST completa
+   * Extrai a estrutura real da consulta
+
+2. **Interpreter**
+
+   * Converte estrutura em significado
+   * Gera títulos e descrições determinísticas
+   * Sem heurísticas frágeis ou IA generativa
+
+3. **Generator**
+
+   * Normaliza e valida dados para apresentação
+   * Atua como view-model defensivo
+
+4. **HTML Theme**
+
+   * Renderiza HTML estático
+   * Injeta dados via JSON de forma segura
+
+5. **CLI**
+
+   * Orquestra todo o fluxo
+   * Isola falhas por arquivo
+   * Gera relatórios confiáveis
+
+---
+
+## 🔬 Como funciona internamente
+
+### 🔍 Análise estrutural
+
+* Parsing seguro via `sqlglot`
+* Construção de AST (Abstract Syntax Tree)
+* Caminhamento completo da árvore
+* Identificação de elementos semânticos reais (tabelas, métricas, dimensões, joins)
+
+### 🧠 Interpretação semântica
+
+* Geração determinística de títulos
+* Construção de descrições legíveis para humanos
+* Totalmente previsível, auditável e reprodutível
+
+### 🌐 Renderização
+
+* HTML estático e portátil
+* Sem execução de código SQL
+* Sem dependência de backend ou banco de dados
 
 ---
 
@@ -60,10 +156,10 @@ Cada módulo tem **responsabilidade única**, facilitando manutenção e evoluç
 
 ### Requisitos
 
-* Python 3.11.6
-* pip
+* Python **3.11+**
+* `pip`
 
-### Dependências
+### Dependência principal
 
 ```bash
 pip install sqlglot
@@ -73,12 +169,21 @@ pip install sqlglot
 
 ## ▶️ Como usar
 
-1. Coloque suas queries na pasta `queries/` (com ou sem subpastas)
+1. Organize suas queries em uma pasta:
 
-2. Execute o CLI:
+```
+queries/
+├── indicadores/
+│   ├── vacinacao.sql
+│   └── gestantes.sql
+├── relatorios/
+│   └── producao.sql
+```
+
+2. Execute o SQL DocGen:
 
 ```bash
-py cli.py queries
+python cli.py queries
 ```
 
 3. Abra o arquivo gerado:
@@ -89,54 +194,38 @@ output/consultas.html
 
 ---
 
-## 🧠 Como funciona
+## 📌 Casos de uso reais
 
-1. **Analyzer**
-
-   * Lê o SQL
-   * Identifica tabelas, métricas, dimensões, joins e subqueries
-
-2. **Interpreter**
-
-   * Gera título e descrição em linguagem natural
-
-3. **Renderer**
-
-   * Monta um HTML único com todos os blocos documentados
-
----
-
-## 📌 Casos de uso
-
-* Documentação de queries legadas
-* Repositórios de BI / Analytics
-* Times de dados e backend
-* Órgãos públicos (saúde, indicadores, relatórios)
+* Documentação de SQL legado
+* Repositórios de BI e Analytics
+* Times de backend e dados
+* Auditorias técnicas
+* Órgãos públicos e indicadores oficiais
 * Onboarding de novos desenvolvedores
 
 ---
 
 ## 🛣️ Roadmap
 
-* [ ] Índice lateral por pasta
-* [ ] Busca instantânea no HTML
+* [ ] Índice lateral por pastas
+* [ ] Busca instantânea no HTML (client-side)
 * [ ] Collapse / expand do SQL
-* [ ] Detecção de domínio (ex: vacinação, financeiro)
-* [ ] Suporte avançado a CTEs e UNION
+* [ ] Suporte avançado a CTEs e `UNION`
+* [ ] Detecção automática de domínio semântico
 * [ ] Exportação para PDF
 
 ---
 
 ## 🤝 Contribuindo
 
-Contribuições são muito bem-vindas!
+Contribuições são bem-vindas e incentivadas.
 
 1. Faça um fork do projeto
-2. Crie uma branch (`feature/minha-feature`)
-3. Commit suas alterações
+2. Crie uma branch (`feature/sua-feature`)
+3. Commit com mensagens claras
 4. Abra um Pull Request
 
-Sugestões, issues e melhorias de heurística são especialmente bem-vindas.
+Discussões arquiteturais e melhorias semânticas são especialmente bem-vindas.
 
 ---
 
@@ -150,4 +239,4 @@ MIT License.
 
 Projeto idealizado e desenvolvido por **Alacoque**.
 
-Se este projeto te ajudou, considere deixar uma ⭐ no repositório.
+Se este projeto te ajudou ou te impressionou tecnicamente, considere deixar uma ⭐ no repositório.

@@ -1,5 +1,4 @@
 
-
 from typing import Dict, Any
 from html_theme import render_query_block
 

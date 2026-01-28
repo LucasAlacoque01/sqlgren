@@ -1,5 +1,4 @@
 
-    
 // Sample data - this would be injected by Python
      //let filtered = queries;
      

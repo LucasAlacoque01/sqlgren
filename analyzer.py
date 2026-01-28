@@ -1,5 +1,4 @@
 
-
 import sqlglot
 from sqlglot import exp
 from typing import Dict, List, Set, Optional
