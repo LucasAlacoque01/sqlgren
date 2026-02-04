@@ -17,6 +17,13 @@ const defaultConfig = {
   font_size: 16
 };
 
+const DATA = Array.isArray(sampleQueries)
+  ? sampleQueries
+  : [];
+
+// cópia de trabalho
+let queries = [...DATA];
+
 let config = { ...defaultConfig };
 let currentFilter = 'all';
 let searchTerm = '';
@@ -179,7 +186,7 @@ function renderNav(queries) {
 }
 
 function filterQueries() {
-  let filtered = sampleQueries;
+  let filtered = queries;
   
   if (currentFilter !== 'all') {
     filtered = filtered.filter(q => q.tipo.toUpperCase() === currentFilter.toUpperCase());
@@ -369,3 +376,11 @@ setTimeout(() => {
   });
 }, 1000);
  (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c186b32b0ea4f7e',t:'MTc2OTAxNTM2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+
+document.getElementById('download-sql')
+  ?.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = 'queries_organizadas.sql';
+    a.download = 'queries_organizadas.sql';
+    a.click();
+  });

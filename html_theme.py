@@ -1,20 +1,15 @@
-
 import json
 import html
 from pathlib import Path
 from typing import Iterable, Dict, Any
 
-
-
 # Utilidades básicas
-
 def esc(value: Any) -> str:
     """
     Escapa qualquer valor para HTML seguro (previne XSS).
     NÃO usar para JSON que será injetado em <script>.
     """
     return html.escape(str(value)) if value is not None else ""
-
 
 def load_template(template_name: str) -> str:
     """
@@ -35,9 +30,7 @@ def load_template(template_name: str) -> str:
     return template_path.read_text(encoding="utf-8")
 
 
-
 # Renderização da página
-
 def render_page(
     title: str,
     blocks: Iterable[Dict[str, Any]],
@@ -46,7 +39,7 @@ def render_page(
     """
     Renderiza a página HTML substituindo:
     - {{title}} → título escapado
-    - {{data}}  → JSON puro com os blocks
+    - `{{ data }}`  → JSON puro com os blocks
     """
     template = load_template(template_name)
 
@@ -55,5 +48,5 @@ def render_page(
     return (
         template
         .replace("{{title}}", esc(title))
-        .replace("{{data}}", blocks_json)
+        .replace("`{{data}}`", blocks_json)
     )

@@ -1,4 +1,3 @@
-
 from typing import Dict, Any
 from html_theme import render_query_block
 
@@ -34,7 +33,7 @@ def generate_block(name: str, sql: str, info: Dict[str, Any]) -> str:
         "dimensoes": info.get("dimensoes", []),
     }
 
-    # Higienização básica do SQL
+    # Higienização do SQL
     sql_clean = sql.strip()
 
     # Geração do HTML isolada

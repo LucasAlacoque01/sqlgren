@@ -1,11 +1,10 @@
-
 import sys
 from pathlib import Path
 from typing import List, Dict
-
 from analyzer import analyze_sql
 from interpreter import interpretar
 from html_theme import render_page
+from sql_exporter import exportar_queries_sql
 
 
 def main():
@@ -84,6 +83,10 @@ def main():
     if not blocks:
         print("\n Nenhuma query válida encontrada. HTML não será gerado.")
         sys.exit(1)
+
+    # Exportação SQL organizada
+    sql_file = exportar_queries_sql(blocks, output_dir)
+    print(f"\n SQL organizado gerado em: {sql_file.resolve()}")
 
     #  Geração do HTML
     html = render_page("Documentação de Queries SQL", blocks)
