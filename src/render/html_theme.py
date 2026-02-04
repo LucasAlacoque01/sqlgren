@@ -19,7 +19,7 @@ def load_template(template_name: str) -> str:
     base_dir = Path(__file__).resolve().parent
 
     #  templates 
-    templates_dir = base_dir / "templates"
+    templates_dir = base_dir.parent.parent / "templates"
     template_path = templates_dir / template_name
 
     if not template_path.exists():

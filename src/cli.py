@@ -1,10 +1,10 @@
 import sys
 from pathlib import Path
 from typing import List, Dict
-from analyzer import analyze_sql
-from interpreter import interpretar
-from html_theme import render_page
-from sql_exporter import exportar_queries_sql
+from script.analyzer import analyze_sql
+from script.interpreter import interpretar
+from render.html_theme import render_page
+from render.sql_exporter import exportar_queries_sql
 
 
 def main():
