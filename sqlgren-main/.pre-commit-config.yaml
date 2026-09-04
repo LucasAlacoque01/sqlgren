@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: acervo-check
+        name: acervo --check
+        entry: python src/cli.py queries --check --pr-comment
+        language: system
+        pass_filenames: false
+        files: \.sql$

@@ -1,0 +1,29 @@
+name: acervo-check
+on:
+  pull_request:
+  push:
+    paths:
+      - "queries/**"
+      - "src/**"
+      - "tests/**"
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest
+      - run: pytest tests -q
+      - run: python src/cli.py queries --check --pr-comment --title "CI Acervo"
+      - run: python src/cli.py queries --locale en --redact-pii -o output-en --title "Acervo EN"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm run smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: acervo-artifacts
+          path: output/

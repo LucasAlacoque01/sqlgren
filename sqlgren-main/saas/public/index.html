@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acervo — the SQL archive you can sell, share, and audit</title>
+  <meta name="description" content="Turn a folder of legacy .sql into a portable catalog: twins, blast radius, PII, briefing. No warehouse. No dbt. No query execution.">
+  <meta property="og:title" content="Acervo — static SQL intelligence">
+  <meta property="og:description" content="Inventory, impact, twins and PII from a folder of .sql. One HTML file. Ready for a client Friday.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect rx='8' width='32' height='32' fill='%2307080c'/%3E%3Cpath d='M7 11c0-2.4 4-4.2 9-4.2s9 1.8 9 4.2-4 4.2-9 4.2-9-1.8-9-4.2z' fill='none' stroke='%235eead4' stroke-width='1.6'/%3E%3Cpath d='M7 11v11c0 2.4 4 4.2 9 4.2s9-1.8 9-4.2V11' fill='none' stroke='%235eead4' stroke-width='1.6'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#07080c; --card:#12151d; --line:rgba(255,255,255,.08); --text:#eef2f8; --muted:#8d95a8; --accent:#5eead4; --warn:#fbbf24; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; font-family:"IBM Plex Sans",system-ui,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { width:min(1120px, calc(100% - 40px)); margin:0 auto; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:22px 0; position:sticky; top:0; background:color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter:blur(16px); z-index:4; }
+    .brand { font-family:Syne,sans-serif; font-weight:800; letter-spacing:-.04em; display:flex; align-items:center; gap:10px; }
+    .mark { width:28px; height:28px; color:var(--accent); }
+    .ghost { border:1px solid var(--line); background:transparent; color:var(--text); border-radius:10px; padding:8px 12px; cursor:pointer; text-decoration:none; display:inline-block; }
+    .cta { background:var(--accent); color:#04201c; border:0; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
+    .hero { padding:64px 0 36px; }
+    .kicker { color:var(--accent); font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; margin-bottom:14px; }
+    h1 { font-family:Syne,sans-serif; font-size:clamp(2.4rem,7vw,4.6rem); letter-spacing:-.055em; line-height:.94; margin:0 0 18px; }
+    .lede { color:var(--muted); max-width:62ch; font-size:1.12rem; line-height:1.6; }
+    .trust { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .trust span { border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:12px; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:1.1fr .9fr; gap:22px; padding-bottom:28px; }
+    .cases { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:10px 0 48px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:22px; }
+    .card h3 { margin:0 0 8px; font-size:1rem; }
+    .card p { color:var(--muted); font-size:14px; line-height:1.5; margin:0; }
+    label { display:block; font-size:13px; color:var(--muted); margin:12px 0 6px; }
+    input[type=text], input[type=password] { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0c0e14; color:var(--text); }
+    .drop { margin-top:12px; border:1px dashed var(--line); border-radius:14px; padding:22px; text-align:center; color:var(--muted); }
+    .files { margin-top:10px; font-size:12px; color:var(--muted); max-height:120px; overflow:auto; }
+    .row { display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin-top:12px; font-size:13px; color:var(--muted); }
+    .plans { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:10px 0 36px; }
+    .plans h3 { margin:0 0 8px; }
+    .plans p { color:var(--muted); font-size:14px; }
+    .price { font-family:Syne,sans-serif; font-size:1.8rem; margin:8px 0; }
+    .list { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+    .list a { color:var(--accent); text-decoration:none; }
+    .err { color:#fb7185; font-size:13px; min-height:1.2em; }
+    .note { color:var(--muted); font-size:13px; padding-bottom:56px; }
+    footer { border-top:1px solid var(--line); padding:22px 0 40px; color:var(--muted); font-size:13px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    @media (max-width:900px) { .grid,.plans,.cases { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M6 10c0-2.8 4.5-5 10-5s10 2.2 10 5-4.5 5-10 5-10-2.2-10-5z" stroke="currentColor" stroke-width="1.6"/><path d="M6 10v12c0 2.8 4.5 5 10 5s10-2.2 10-5V10" stroke="currentColor" stroke-width="1.6"/></svg>
+        Acervo
+      </div>
+      <div>
+        <button class="ghost" id="btn-lang" type="button">EN</button>
+        <button class="ghost" id="btn-demo" type="button" data-i="demo">Ver demo APS</button>
+        <a class="cta" href="#studio" data-i="cta">Publicar catálogo</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="kicker" data-i="kicker">SQL intelligence · sem warehouse</div>
+      <h1 data-i="h1">O SQL do time, finalmente vendável.</h1>
+      <p class="lede" data-i="lede">Envie uma pasta de .sql. Em segundos você tem inventário, gêmeos, raio de explosão, PII mascarado e um briefing que o gestor encaminha. Sem executar o banco. Sem dbt. Um HTML que cabe no e-mail de sexta.</p>
+      <div class="trust">
+        <span data-i="t1">Zero execução de SQL</span>
+        <span data-i="t2">PII detectado e mascarável</span>
+        <span data-i="t3">PT / EN nativo</span>
+        <span data-i="t4">CI --check · MIT</span>
+      </div>
+    </section>
+
+    <section class="cases">
+      <article class="card"><h3 data-i="c1t">Saúde / APS</h3><p data-i="c1">Indicadores oficiais, CNS/CPF visíveis no SQL, pasta que ninguém documentou.</p></article>
+      <article class="card"><h3 data-i="c2t">Consultoria</h3><p data-i="c2">Entrega de sexta: HTML + briefing + ZIP. O cliente fica com a evidência.</p></article>
+      <article class="card"><h3 data-i="c3t">Finanças / seguro</h3><p data-i="c3">Queries de risco, gêmeos de regra, blast radius antes de mudar o DW.</p></article>
+      <article class="card"><h3 data-i="c4t">Governo / auditoria</h3><p data-i="c4">Evidência do que cada arquivo faz — sem pedir acesso ao banco de produção.</p></article>
+    </section>
+
+    <section class="grid" id="studio">
+      <div class="card">
+        <h2 data-i="new">Novo projeto</h2>
+        <label data-i="name">Nome do catálogo</label>
+        <input id="title" type="text" value="Acervo do time" maxlength="80">
+        <label data-i="files">Arquivos .sql</label>
+        <div class="drop">
+          <input id="picker" type="file" accept=".sql" multiple>
+          <div class="files" id="file-list" data-i="nofile">Nenhum arquivo ainda.</div>
+        </div>
+        <div class="row">
+          <label><input id="opt-en" type="checkbox"> English catalog</label>
+          <label><input id="opt-redact" type="checkbox" checked> <span data-i="redact">Mascarar PII</span></label>
+        </div>
+        <label data-i="pin">PIN opcional (compartilhamento)</label>
+        <input id="pin" type="password" maxlength="32" placeholder="••••">
+        <p class="err" id="err"></p>
+        <button class="cta" id="btn-pub" type="button" data-i="pub">Gerar e publicar</button>
+      </div>
+      <div class="card">
+        <h2 data-i="yours">Seus catálogos</h2>
+        <p class="lede" data-i="cookie">Ficam neste navegador (cookie de workspace). O link /p/… pode ser compartilhado. ZIP incluso.</p>
+        <div class="list" id="projects" data-i="loading">Carregando…</div>
+      </div>
+    </section>
+
+    <section class="plans">
+      <div class="card"><h3>Community</h3><div class="price">$0</div><p data-i="p1">CLI + HTML local, 80 arquivos no studio, PIN, máscara de PII, PT/EN. É o que está rodando agora. MIT.</p></div>
+      <div class="card"><h3>Pro</h3><div class="price">$29<span style="font-size:14px;color:var(--muted)">/mo</span></div><p data-i="p2">GitHub sync, --check no CI hospedado, retenção, domínio próprio. Próximo passo comercial — ainda não cobrado.</p></div>
+      <div class="card"><h3>Team</h3><div class="price">$99<span style="font-size:14px;color:var(--muted)">/mo</span></div><p data-i="p3">SSO, donos por pasta, white-label para consultoria. Quando o Community provar demanda.</p></div>
+    </section>
+    <p class="note" data-i="honest">Preços em USD são intenção de produto, não cobrança. Acervo não é OpenMetadata nem dbt. Ganha onde existe uma pasta de .sql e não existe warehouse.</p>
+
+    <footer>
+      <div>Acervo 6 · MIT · Alacoque</div>
+      <div>localhost:8787 · /health</div>
+    </footer>
+  </div>
+  <script>
+    const I18N = {
+      pt: {
+        demo: "Ver demo APS", cta: "Publicar catálogo", kicker: "inteligência de SQL · sem warehouse",
+        h1: "O SQL do time, finalmente vendável.",
+        lede: "Envie uma pasta de .sql. Em segundos você tem inventário, gêmeos, raio de explosão, PII mascarado e um briefing que o gestor encaminha. Sem executar o banco. Sem dbt. Um HTML que cabe no e-mail de sexta.",
+        t1: "Zero execução de SQL", t2: "PII detectado e mascarável", t3: "PT / EN nativo", t4: "CI --check · MIT",
+        c1t: "Saúde / APS", c1: "Indicadores oficiais, CNS/CPF visíveis no SQL, pasta que ninguém documentou.",
+        c2t: "Consultoria", c2: "Entrega de sexta: HTML + briefing + ZIP. O cliente fica com a evidência.",
+        c3t: "Finanças / seguro", c3: "Queries de risco, gêmeos de regra, blast radius antes de mudar o DW.",
+        c4t: "Governo / auditoria", c4: "Evidência do que cada arquivo faz — sem pedir acesso ao banco de produção.",
+        new: "Novo projeto", name: "Nome do catálogo", files: "Arquivos .sql", nofile: "Nenhum arquivo ainda.",
+        redact: "Mascarar PII", pin: "PIN opcional (compartilhamento)", pub: "Gerar e publicar",
+        yours: "Seus catálogos", cookie: "Ficam neste navegador (cookie de workspace). O link /p/… pode ser compartilhado. ZIP incluso.",
+        loading: "Carregando…", empty: "Nenhum projeto neste workspace.",
+        p1: "CLI + HTML local, 80 arquivos no studio, PIN, máscara de PII, PT/EN. É o que está rodando agora. MIT.",
+        p2: "GitHub sync, --check no CI hospedado, retenção, domínio próprio. Próximo passo comercial — ainda não cobrado.",
+        p3: "SSO, donos por pasta, white-label para consultoria. Quando o Community provar demanda.",
+        honest: "Preços em USD são intenção de produto, não cobrança. Acervo não é OpenMetadata nem dbt. Ganha onde existe uma pasta de .sql e não existe warehouse.",
+      },
+      en: {
+        demo: "Open APS demo", cta: "Publish catalog", kicker: "SQL intelligence · no warehouse",
+        h1: "The team's SQL, finally sellable.",
+        lede: "Drop a folder of .sql. In seconds you get inventory, twins, blast radius, redacted PII and a briefing a manager can forward. No database execution. No dbt. One HTML file that fits in Friday's email.",
+        t1: "Zero SQL execution", t2: "PII detected and maskable", t3: "Native PT / EN", t4: "CI --check · MIT",
+        c1t: "Health / primary care", c1: "Official indicators, national IDs sitting in SQL, a folder nobody documented.",
+        c2t: "Consulting", c2: "Friday delivery: HTML + briefing + ZIP. The client keeps the evidence.",
+        c3t: "Finance / insurance", c3: "Risk queries, twin rules, blast radius before you touch the warehouse.",
+        c4t: "Government / audit", c4: "Evidence of what each file does — without production database access.",
+        new: "New project", name: "Catalog name", files: ".sql files", nofile: "No files yet.",
+        redact: "Redact PII", pin: "Optional share PIN", pub: "Generate and publish",
+        yours: "Your catalogs", cookie: "Stored in this browser (workspace cookie). The /p/… link is shareable. ZIP included.",
+        loading: "Loading…", empty: "No projects in this workspace.",
+        p1: "CLI + local HTML, 80 files in the studio, PIN, PII mask, PT/EN. This is what is running now. MIT.",
+        p2: "GitHub sync, hosted --check CI, retention, custom domain. Next commercial step — not billed yet.",
+        p3: "SSO, folder owners, white-label for consultancies. When Community proves demand.",
+        honest: "USD prices are product intent, not a charge. Acervo is not OpenMetadata or dbt. It wins where a .sql folder exists and a warehouse does not.",
+      },
+    };
+    let locale = localStorage.getItem("acervo-land-locale") || "pt";
+    const files = [];
+    const $ = (id) => document.getElementById(id);
+    const apply = () => {
+      document.documentElement.lang = locale === "en" ? "en" : "pt-BR";
+      $("btn-lang").textContent = locale === "en" ? "PT" : "EN";
+      document.querySelectorAll("[data-i]").forEach((el) => {
+        const key = el.getAttribute("data-i");
+        if (I18N[locale][key]) el.textContent = I18N[locale][key];
+      });
+      if (!$("title").dataset.touched) $("title").value = locale === "en" ? "Team archive" : "Acervo do time";
+    };
+    const load = async () => {
+      const res = await fetch("/api/projects");
+      const data = await res.json();
+      $("projects").innerHTML = (data.projects || []).length
+        ? data.projects.map((p) => `<a href="${p.url}" target="_blank">${p.title} · ${p.queries} queries · ${p.saude}${p.locked ? " · PIN" : ""} · <span data-zip="${p.zip}">zip</span></a>`).join("")
+        : I18N[locale].empty;
+    };
+    $("title").addEventListener("input", () => { $("title").dataset.touched = "1"; });
+    $("picker").addEventListener("change", () => {
+      files.length = 0;
+      [...$("picker").files].forEach((f) => files.push(f));
+      $("file-list").textContent = files.map((f) => f.name).join(" · ") || I18N[locale].nofile;
+    });
+    const publish = async (payload) => {
+      $("err").textContent = "";
+      const res = await fetch("/api/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (!res.ok) { $("err").textContent = data.erro || "fail"; return; }
+      location.href = data.url;
+    };
+    $("btn-pub").addEventListener("click", async () => {
+      if (!files.length) { $("err").textContent = locale === "en" ? "Choose .sql files" : "Escolha arquivos .sql"; return; }
+      const packed = [];
+      for (const file of files) packed.push({ path: file.webkitRelativePath || file.name, sql: await file.text() });
+      publish({
+        title: $("title").value,
+        files: packed,
+        locale: $("opt-en").checked ? "en" : "pt",
+        redact_pii: $("opt-redact").checked,
+        pin: $("pin").value,
+      });
+    });
+    $("btn-demo").addEventListener("click", async () => {
+      const res = await fetch("/api/demo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ locale }) });
+      const data = await res.json();
+      if (!res.ok) { $("err").textContent = data.erro || "fail"; return; }
+      location.href = data.url;
+    });
+    $("btn-lang").addEventListener("click", () => {
+      locale = locale === "en" ? "pt" : "en";
+      localStorage.setItem("acervo-land-locale", locale);
+      apply();
+      load();
+    });
+    apply();
+    load();
+  </script>
+</body>
+</html>

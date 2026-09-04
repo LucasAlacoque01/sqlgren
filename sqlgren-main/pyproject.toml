@@ -1,0 +1,24 @@
+[project]
+name = "acervo"
+version = "6.0.0"
+description = "Acervo — observatório canônico de SQL legado: catálogo, impacto, gêmeos, PII, i18n e HTML portátil."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Alacoque" }]
+dependencies = ["sqlglot>=25.0.0", "networkx>=3.2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+acervo = "src.cli:main"
+sqlgren = "src.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
