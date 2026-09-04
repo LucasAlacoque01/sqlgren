@@ -1,0 +1,94 @@
+
+<!doctype html>
+<html lang="pt-br" class="h-full">
+ <head>
+  <meta charset="utf-8">
+  <title>SQL DocGen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <!-- <script src="/_sdk/element_sdk.js"></script> -->
+   <link rel="stylesheet" href="../assets/css/styles.css">
+ </head>
+ <body class="h-full" style="background: var(--bg-primary); color: var(--text-primary);"><!-- Background Effects -->
+  <div class="spotlight"></div>
+  <div class="grid-bg"></div>
+  <div class="h-full flex overflow-auto" style="position: relative; z-index: 1;"><!-- Sidebar -->
+   <aside class="w-72 flex-shrink-0 border-r flex flex-col" style="background: var(--bg-card); border-color: var(--border);"><!-- Logo -->
+    <div class="p-6 border-b" style="border-color: var(--border);">
+     <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">
+       <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+       </svg>
+      </div>
+      <div>
+       <h1 id="page-title" class="font-display font-bold text-lg gradient-text">SQL DocGen</h1>
+       <p id="subtitle" class="text-xs" style="color: var(--text-muted);">Documentação automática</p>
+      </div>
+     </div>
+    </div><!-- Search -->
+    <div class="p-4">
+     <div class="relative">
+      <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style="color: var(--text-muted);" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg><input id="search-input" type="text" placeholder="Buscar queries..." class="search-input w-full pl-10 pr-4 py-2.5 rounded-lg text-sm font-mono outline-none" style="color: var(--text-primary);">
+     </div>
+      <div class="mt-4">
+          <button
+            id="download-sql"
+            class="w-full px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="background: var(--glow-blue); color: white;"
+          >
+          Baixar queries organizadas (.sql)
+          </button>
+        </div>
+    </div><!-- Stats -->
+    <div class="px-4 pb-4 grid grid-cols-2 gap-2">
+     <div class="stats-card rounded-lg p-3 text-center">
+      <div id="total-queries" class="font-display font-bold text-xl" style="color: var(--accent-blue);">
+       4
+      </div>
+      <div class="text-xs" style="color: var(--text-muted);">
+       Queries
+      </div>
+     </div>
+     <div class="stats-card rounded-lg p-3 text-center">
+      <div id="total-tables" class="font-display font-bold text-xl" style="color: var(--accent-emerald);">
+       8
+      </div>
+      <div class="text-xs" style="color: var(--text-muted);">
+       Tabelas
+      </div>
+     </div>
+    </div><!-- Query List -->
+    <nav class="flex-1 overflow-y-auto px-2">
+     <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+      Queries
+     </div>
+     <div id="query-nav" class="space-y-1"><!-- Populated by JS -->
+     </div>
+    </nav><!-- Footer -->
+    <div class="p-4 border-t" style="border-color: var(--border);">
+     <div class="flex items-center gap-2 text-xs" style="color: var(--text-muted);">
+      <div class="w-2 h-2 rounded-full pulse-dot" style="background: var(--accent-emerald);"></div><span id="generated-at">Gerado em 04/01/2025 15:30</span>
+     </div>
+    </div>
+   </aside><!-- Main Content -->
+   <main class="flex-1 overflow-y-auto"><!-- Header -->
+    <header class="sticky top-0 z-10 backdrop-blur-xl border-b" style="background: rgba(10, 10, 15, 0.8); border-color: var(--border);">
+     <div class="px-8 py-4 flex items-center justify-between">
+      <div>
+       <h2 class="font-display font-semibold text-lg" style="color: var(--text-primary);">Documentação de Queries</h2>
+       <p class="text-sm" style="color: var(--text-secondary);">Análise estrutural baseada em sqlglot</p>
+      </div>
+      <div class="flex items-center gap-3"><button id="filter-all" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--accent-blue); color: white;"> Todas </button> <button id="filter-select" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> SELECT </button> <button id="filter-insert" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> INSERT </button> <button id="filter-update" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> UPDATE </button>
+      </div>
+     </div>
+    </header><!-- Cards Container -->
+    <div id="cards-container" class="p-8 space-y-8"><!-- Cards populated by JS -->
+    </div>
+   </main>
+  </div>
+  <script> const sampleQueries = `{{data}}` </script>
+  <script src="../assets/js/app.js"></script>
+  </body>
+ </html>
+ 

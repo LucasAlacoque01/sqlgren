@@ -1,0 +1,94 @@
+
+<!doctype html>
+<html lang="pt-br" class="h-full">
+ <head>
+  <meta charset="utf-8">
+  <title>SQL DocGen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <!-- <script src="/_sdk/element_sdk.js"></script> -->
+   <link rel="stylesheet" href="../assets/css/styles.css">
+ </head>
+ <body class="h-full" style="background: var(--bg-primary); color: var(--text-primary);"><!-- Background Effects -->
+  <div class="spotlight"></div>
+  <div class="grid-bg"></div>
+  <div class="h-full flex overflow-auto" style="position: relative; z-index: 1;"><!-- Sidebar -->
+   <aside class="w-72 flex-shrink-0 border-r flex flex-col" style="background: var(--bg-card); border-color: var(--border);"><!-- Logo -->
+    <div class="p-6 border-b" style="border-color: var(--border);">
+     <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));">
+       <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+       </svg>
+      </div>
+      <div>
+       <h1 id="page-title" class="font-display font-bold text-lg gradient-text">SQL DocGen</h1>
+       <p id="subtitle" class="text-xs" style="color: var(--text-muted);">Documentação automática</p>
+      </div>
+     </div>
+    </div><!-- Search -->
+    <div class="p-4">
+     <div class="relative">
+      <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style="color: var(--text-muted);" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg><input id="search-input" type="text" placeholder="Buscar queries..." class="search-input w-full pl-10 pr-4 py-2.5 rounded-lg text-sm font-mono outline-none" style="color: var(--text-primary);">
+     </div>
+      <div class="mt-4">
+          <button
+            id="download-sql"
+            class="w-full px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="background: var(--glow-blue); color: white;"
+          >
+          Baixar queries organizadas (.sql)
+          </button>
+        </div>
+    </div><!-- Stats -->
+    <div class="px-4 pb-4 grid grid-cols-2 gap-2">
+     <div class="stats-card rounded-lg p-3 text-center">
+      <div id="total-queries" class="font-display font-bold text-xl" style="color: var(--accent-blue);">
+       4
+      </div>
+      <div class="text-xs" style="color: var(--text-muted);">
+       Queries
+      </div>
+     </div>
+     <div class="stats-card rounded-lg p-3 text-center">
+      <div id="total-tables" class="font-display font-bold text-xl" style="color: var(--accent-emerald);">
+       8
+      </div>
+      <div class="text-xs" style="color: var(--text-muted);">
+       Tabelas
+      </div>
+     </div>
+    </div><!-- Query List -->
+    <nav class="flex-1 overflow-y-auto px-2">
+     <div class="px-2 py-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--text-muted);">
+      Queries
+     </div>
+     <div id="query-nav" class="space-y-1"><!-- Populated by JS -->
+     </div>
+    </nav><!-- Footer -->
+    <div class="p-4 border-t" style="border-color: var(--border);">
+     <div class="flex items-center gap-2 text-xs" style="color: var(--text-muted);">
+      <div class="w-2 h-2 rounded-full pulse-dot" style="background: var(--accent-emerald);"></div><span id="generated-at">Gerado em 04/01/2025 15:30</span>
+     </div>
+    </div>
+   </aside><!-- Main Content -->
+   <main class="flex-1 overflow-y-auto"><!-- Header -->
+    <header class="sticky top-0 z-10 backdrop-blur-xl border-b" style="background: rgba(10, 10, 15, 0.8); border-color: var(--border);">
+     <div class="px-8 py-4 flex items-center justify-between">
+      <div>
+       <h2 class="font-display font-semibold text-lg" style="color: var(--text-primary);">Documentação de Queries</h2>
+       <p class="text-sm" style="color: var(--text-secondary);">Análise estrutural baseada em sqlglot</p>
+      </div>
+      <div class="flex items-center gap-3"><button id="filter-all" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--accent-blue); color: white;"> Todas </button> <button id="filter-select" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> SELECT </button> <button id="filter-insert" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> INSERT </button> <button id="filter-update" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all" style="background: var(--bg-elevated); color: var(--text-secondary);"> UPDATE </button>
+      </div>
+     </div>
+    </header><!-- Cards Container -->
+    <div id="cards-container" class="p-8 space-y-8"><!-- Cards populated by JS -->
+    </div>
+   </main>
+  </div>
+  <script> const sampleQueries = [{"arquivo": "Script-1.sql", "titulo": "COUNT dos registros", "descricao": "Agregação de dados. com cálculo de COUNT. utilizando as tabelas TB_DIM_CIAP AS CIAP, TB_FAT_ATD_IND_PROBLEMAS AS FAIP, pacientes_hipertensos, tb_dim_cbo AS tdc, tb_dim_procedimento AS proc, tb_dim_tempo AS tdt e tb_fat_proced_atend_proced AS pr.", "complexidade": "Pesada", "tipo": "Agregação", "tabelas": ["TB_DIM_CIAP AS CIAP", "TB_FAT_ATD_IND_PROBLEMAS AS FAIP", "pacientes_hipertensos", "tb_dim_cbo AS tdc", "tb_dim_procedimento AS proc", "tb_dim_tempo AS tdt", "tb_fat_proced_atend_proced AS pr"], "metricas": ["COUNT"], "dimensoes": [], "sql": "-- Resumo: Consulta de hipertensão (tabelas: TB_DIM_TEMPO, TB_FAT_PROCED_ATEND_PROCED, TB_DIM_PROCEDIMENTO, TB_DIM_CBO, PACIENTES_HIPERTENSOS, TB_FAT_ATD_IND_PROBLEMAS, TB_DIM_CIAP)\n-- Nº Total de Hipertensos com PA Aferida (Médico ou Enfermeiro)\n\nWITH pacientes_hipertensos AS (\n    SELECT DISTINCT FAIP.CO_FAT_CIDADAO_PEC\n    FROM TB_FAT_ATD_IND_PROBLEMAS FAIP\n    JOIN TB_DIM_CIAP CIAP ON FAIP.CO_DIM_CIAP = CIAP.CO_SEQ_DIM_CIAP\n    WHERE CIAP.NU_CIAP IN ('K86', 'K87', 'ABP005')\n)\nSELECT COUNT(DISTINCT pr.co_fat_cidadao_pec) AS \"Nº de Hipertensos com PA Aferida\"\nFROM tb_fat_proced_atend_proced pr\nJOIN tb_dim_tempo tdt ON pr.co_dim_tempo = tdt.co_seq_dim_tempo\nJOIN tb_dim_procedimento proc ON pr.co_dim_procedimento = proc.co_seq_dim_procedimento\nJOIN tb_dim_cbo tdc ON pr.co_dim_cbo = tdc.co_seq_dim_cbo\nWHERE tdt.nu_ano = '2025'\n    AND tdt.nu_mes = '7'\n    AND pr.co_fat_cidadao_pec IN (\n        SELECT CO_FAT_CIDADAO_PEC\n        FROM pacientes_hipertensos\n    )\n    AND proc.co_proced IN ('0301100039', 'ABPG033')\n    AND (\n        tdc.nu_cbo::text LIKE '225%' -- Médicos\n        OR tdc.nu_cbo::text LIKE '2235%' -- Enfermeiros \n        );"}, {"arquivo": "Script-10.sql", "titulo": "Listagem geral de registros", "descricao": "Listagem de dados. utilizando as tabelas criancas_covid AS cc, criancas_faixa_etaria AS cf, tb_cidadao_vinculacao_equipe AS cve, tb_dim_equipe AS tde, tb_dim_imunobiologico AS i, tb_dim_sexo AS ds, tb_dim_tempo AS dt, tb_dim_tempo AS t, tb_dim_unidade_saude AS tdus, tb_fat_cidadao_pec AS pec, tb_fat_cidadao_territorio AS fct, tb_fat_vacinacao AS fv, tb_fat_vacinacao_vacina AS v e tb_imunobiologico AS ti.", "complexidade": "Pesada", "tipo": "Listagem", "tabelas": ["criancas_covid AS cc", "criancas_faixa_etaria AS cf", "tb_cidadao_vinculacao_equipe AS cve", "tb_dim_equipe AS tde", "tb_dim_imunobiologico AS i", "tb_dim_sexo AS ds", "tb_dim_tempo AS dt", "tb_dim_tempo AS t", "tb_dim_unidade_saude AS tdus", "tb_fat_cidadao_pec AS pec", "tb_fat_cidadao_territorio AS fct", "tb_fat_vacinacao AS fv", "tb_fat_vacinacao_vacina AS v", "tb_imunobiologico AS ti"], "metricas": [], "dimensoes": [], "sql": "WITH criancas_covid AS (\n    SELECT DISTINCT\n        pec.co_seq_fat_cidadao_pec AS co_cidadao\n    FROM tb_fat_vacinacao_vacina v\n        JOIN tb_fat_vacinacao fv ON v.co_fat_vacinacao = fv.co_seq_fat_vacinacao\n        JOIN tb_dim_imunobiologico i ON v.co_dim_imunobiologico = i.co_seq_dim_imunobiologico\n        JOIN tb_imunobiologico ti ON i.nu_identificador = ti.co_imunobiologico::text\n        JOIN tb_dim_tempo t ON v.co_dim_tempo = t.co_seq_dim_tempo\n        JOIN tb_fat_cidadao_pec pec ON fv.co_fat_cidadao_pec = pec.co_seq_fat_cidadao_pec\n    WHERE ti.st_covid = 1\n      AND EXTRACT(YEAR FROM t.dt_registro) IN (2024, 2025)\n),\ncriancas_faixa_etaria AS (\n    SELECT \n        pec.co_seq_fat_cidadao_pec,\n        pec.nu_cns,\n        pec.nu_cpf_cidadao,\n        pec.no_cidadao,\n        ds.ds_sexo,\n        dt.dt_registro AS dt_nascimento,\n        EXTRACT(YEAR FROM age(current_date, dt.dt_registro))::integer AS idade_anos,\n        (EXTRACT(MONTH FROM age(current_date, dt.dt_registro))::integer % 12) AS idade_meses,\n        tdus.nu_cnes,\n        tdus.no_unidade_saude,\n        tde.nu_ine,\n        tde.no_equipe\n    FROM tb_fat_cidadao_pec pec\n        JOIN tb_fat_cidadao_territorio fct ON pec.co_seq_fat_cidadao_pec = fct.co_fat_cidadao_pec\n        JOIN tb_cidadao_vinculacao_equipe cve ON pec.co_cidadao = cve.co_cidadao\n        JOIN tb_dim_tempo dt ON pec.co_dim_tempo_nascimento = dt.co_seq_dim_tempo\n        JOIN tb_dim_sexo ds ON pec.co_dim_sexo = ds.co_seq_dim_sexo\n        JOIN tb_dim_unidade_saude tdus ON cve.nu_cnes = tdus.nu_cnes \n        JOIN tb_dim_equipe tde ON cve.nu_ine = tde.nu_ine \n    WHERE fct.st_mudou_se = 0 \n      AND fct.st_vivo = 1\n      AND dt.dt_registro BETWEEN '2020-01-01' AND '2024-06-30'\n     \n)\nSELECT \n    cf.nu_cnes,\n    cf.no_unidade_saude,\n    cf.nu_ine,\n    cf.no_equipe,\n    cf.nu_cns,\n    cf.nu_cpf_cidadao,\n    cf.no_cidadao,\n    cf.ds_sexo,\n    cf.dt_nascimento,\n    CASE\n        WHEN cf.idade_anos < 1 THEN cf.idade_meses || ' mes(es)'\n        WHEN cf.idade_anos = 1 THEN '1 ano e ' || cf.idade_meses || ' mes(es)'\n        ELSE cf.idade_anos || ' anos'\n    END AS idade,\n    'Faltoso COVID-19 (2024-2025)' AS observacao,\n    current_date AS data_geracao_relatorio\nFROM criancas_faixa_etaria cf\nLEFT JOIN criancas_covid cc ON cf.co_seq_fat_cidadao_pec = cc.co_cidadao\nWHERE cc.co_cidadao IS NULL\nORDER BY cf.no_unidade_saude, cf.nu_cnes, cf.no_equipe, cf.nu_ine, cf.no_cidadao;"}, {"arquivo": "Script-2.sql", "titulo": "Listagem geral de registros", "descricao": "Listagem de dados. utilizando as tabelas public.calendario_vacinal AS cv.", "complexidade": "Simples", "tipo": "Listagem", "tabelas": ["public.calendario_vacinal AS cv"], "metricas": [], "dimensoes": [], "sql": "select \n    cv.no_unidade_saude as \"UNIDADE\",\n    cv.no_cidadao as \"CIDADÃO\",\n    cv.nu_cpf as \"CPF\",\n    cv.nu_cns as \"CNS\",\n    to_char(cv.dt_nascimento, 'dd/MM/yyyy') as \"DATA NASC\",\n    case\n        when cv.idade_meses < 12 then \n            cv.idade_meses || ' mes(es)'\n        else\n            floor(cv.idade_meses / 12)::int || ' ano(s) ' || (cv.idade_meses % 12) || ' mes(es)'\n    end as \"IDADE\",\n    cv.no_imunobiologico as \"IMUNO\",\n    cv.no_dose_imunobiologico as \"DOSE\"\nfrom public.calendario_vacinal cv\nwhere cv.co_grupo_alvo = 'CRIANCAS'\n  and cv.co_status_vacina = 'ATRASADA'\n  and cv.idade_meses < 12   -- apenas até 11 meses e 29 dias\norder by 1,2;"}] </script>
+  <script src="../assets/js/app.js"></script>
+  </body>
+ </html>
+ 
